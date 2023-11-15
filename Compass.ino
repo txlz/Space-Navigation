@@ -44,12 +44,10 @@ void setup() {
 
 
   while (!Serial)
-    delay(10);  // will pause Zero, Leonardo, etc until the serial console opens
+    delay(10); 
 
   Serial.println("Adafruit MPU6050 test!");
 
-  // Initialize I2C with your specified SDA and SCL pins (12 and 13)
-  // Try to initialize!
   if (!mpu.begin()) {
     Serial.println("Failed to find MPU6050 chip");
     while (1) {
@@ -58,7 +56,6 @@ void setup() {
   }
   Serial.println("MPU6050 Found!");
 
-  // The rest of your setup code remains the same
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
   mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
@@ -73,12 +70,10 @@ void loop() {
   delay(500);
   int16_t x, y, z;  //triple axis data
 
-  //Tell the HMC5883 where to begin reading data
   Wire.beginTransmission(address);
-  Wire.write(0x3B);  //select register 3, X MSB register
+  Wire.write(0x3B);  
   Wire.endTransmission();
 
-  //Read data from each axis, 2 registers per axis
     Wire.requestFrom(address, 6);
   if(6<=Wire.available()){
     x = Wire.read() << 8 | Wire.read();
@@ -87,21 +82,21 @@ void loop() {
   }
   Draw_Compass_Rose(); 
   float heading = atan2(z, y); 
-  float declination = 1.529;
-  heading = heading + declination;
-  if(heading < 0)    heading += 2*PI;  // Correct for when signs are reversed.
-  if(heading > 2*PI) heading -= 2*PI;  // Correct for when heading exceeds 360-degree, especially when declination is included
-  angle = int(heading * 180/M_PI); // Convert radians to degrees for more a more usual result
+  float readjust = 1.529;
+  heading = heading + readjust;
+  if(heading < 0)    heading += 2*PI;  
+  if(heading > 2*PI) heading -= 2*PI;  
+  angle = int(heading * 180/M_PI); 
   dx = (0.7*radius * cos((angle-90)*3.14/180)) + centreX; 
   dy = (0.7*radius * sin((angle-90)*3.14/180)) + centreY;  
-  arrow(last_dx,last_dy, centreX, centreY, 2,2,BLACK);      // Erase last arrow      
-  arrow(dx,dy, centreX, centreY, 2, 2,WHITE);               // Draw arrow in new position
+  arrow(last_dx,last_dy, centreX, centreY, 2,2,BLACK);      
+  arrow(dx,dy, centreX, centreY, 2, 2,WHITE);               
   last_dx = dx; 
   last_dy = dy;
   display.setCursor(100,45);
   display.fillRect(100,45,25,48,BLACK);
   display.print(angle);
-  display.print(char(247)); // and the degree symbol
+  display.print(char(247)); 
   display.display();
   delay(10);
 }
