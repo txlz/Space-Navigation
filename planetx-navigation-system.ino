@@ -19,7 +19,7 @@ const int radius = 20;
 void setup() {
   Serial.begin(115200);
   Wire.begin(4,5);
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 64x48)
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -33,12 +33,11 @@ void setup() {
   display.clearDisplay();
   display.display();
 
-  //Put the HMC5883 IC into the correct operating mode
-  Wire.beginTransmission(address);  //open communication with HMC5883
-  Wire.write(0x1C);                 //select mode register
-  Wire.write(0x10);                 //continuous measurement mode
+  Wire.beginTransmission(address);  
+  Wire.write(0x1C);                 
+  Wire.write(0x10);                
   Wire.endTransmission();
-  delay(300);  // Slight delay for screen to start
+  delay(300);  
   last_dx = centreX;
   last_dy = centreY;
 
